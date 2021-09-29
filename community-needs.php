@@ -3,10 +3,10 @@
 Plugin Name: Community Needs
 Plugin URI:
 Description: Post disaster community needs database
-Version: 1.7.12.27
+Version: 2.21.09.29.A
 Author URI: piercebeckett.net
-Licencse: GPL2
-License URI:  https://www.gnu.org/licenses/gpl-2.0.html
+Licencse: GPL3
+License URI:  https://www.gnu.org/licenses/gpl-3.0.html
 */
 
 if ( ! defined( 'WPINC' ) ) {
