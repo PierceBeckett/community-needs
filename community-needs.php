@@ -69,7 +69,7 @@ function communityneeds_install () {
 	   name tinytext DEFAULT '' NOT NULL,
 	   region_id mediumint(9),
 	   PRIMARY KEY  (id),
-	   KEY region_id (region_id_
+	   KEY region_id (region_id)
 	 );";
 	 dbDelta( $sql );
 
