@@ -158,7 +158,7 @@ function submit_receiver_form() {
 
 	  echo '<hr />';
 	} else {
-		$user = $wpdb->get_row("SELECT * FROM wp_communityneeds_users WHERE email = '" . $_SESSION['email'] . "';");
+		$user = $wpdb->get_row("SELECT * FROM ".$wpdb->prefix."communityneeds_users WHERE email = '" . $_SESSION['email'] . "';");
 	}
 
     	echo '<form action="./#cn-edit" method="post" class="checkclose">';
@@ -396,7 +396,7 @@ function list_receiver_items() {
 	    $words = explode(" ", str_replace(")","",str_replace("(","",$keywords)));
 	    foreach ($words as $word) {
 	    	    $word = sanitize_text_field($word);
-	    	    $search_sql = "INSERT INTO wp_communityneeds_searches SET keywords = '$word';";
+	    	    $search_sql = "INSERT INTO ".$wpdb->prefix."communityneeds_searches SET keywords = '$word';";
 	    	    $wpdb->query($search_sql);
 	    }
 
@@ -974,7 +974,7 @@ function cn_submit_shortcode() {
     } elseif ( $action=="Password Reminder") {
        // send email to user with info on password
        $email = $_REQUEST["cn-email"];
-       $password = $wpdb->get_var("SELECT password FROM wp_communityneeds_users WHERE email = '" . $email . "';");
+       $password = $wpdb->get_var("SELECT password FROM ".$wpdb->prefix."communityneeds_users WHERE email = '" . $email . "';");
        if ($password) {
               $emailbody = "<h2>Password Reminder</h2>";
        	      $emailbody .= "<p>Your password is <strong>" . $password . "</strong></p>";
@@ -995,10 +995,10 @@ function cn_submit_shortcode() {
        // check login attempt
        $email = $_REQUEST["cn-email"];
        $password = $_REQUEST["cn-password"];
-       $login = $wpdb->get_row("SELECT id, email FROM wp_communityneeds_users WHERE email = '" . $email . "' AND password='" . $password . "';");
+       $login = $wpdb->get_row("SELECT id, email FROM ".$wpdb->prefix."communityneeds_users WHERE email = '" . $email . "' AND password='" . $password . "';");
        if ( $login !== null) {
            $_SESSION['email'] = $email;
-	   $sql = "UPDATE wp_communityneeds_users SET lastlogin = NOW() WHERE id = " . $login->id;
+	   $sql = "UPDATE ".$wpdb->prefix."communityneeds_users SET lastlogin = NOW() WHERE id = " . $login->id;
 	   $wpdb->query($sql);
        } else {
            echo '<p>Erro com login, tenta de novo • Login failed, please try again</p>';
@@ -1009,7 +1009,7 @@ function cn_submit_shortcode() {
 
     if ( session_id() && isset($_SESSION['email']) ) {
        // show users saved data
-       $user = $wpdb->get_row("SELECT id, email, name FROM wp_communityneeds_users WHERE email = '" . $_SESSION['email'] . "';");
+       $user = $wpdb->get_row("SELECT id, email, name FROM ".$wpdb->prefix."communityneeds_users WHERE email = '" . $_SESSION['email'] . "';");
        echo '<form action="./#cn-edit" method="post"><h3>Logged in as ' . $user->email . ' <input style="display: inline; float: right;" type="submit" name="cn-action" value="Logout" /></h3></form>';
        $link = 'https://www.centralportugal.com/community-needs/para-doadores-for-donors/?cn-keywords=' . $user->name . '#cn-list';
        echo '<p>Personal list share link : <br/><a href="' . $link . '">' . $link . '</a></p>';
@@ -1019,7 +1019,7 @@ function cn_submit_shortcode() {
 
     return ob_get_clean();
 }
-add_shortcode( 'submit_receiver_form', 'cn_submit_shortcode' );
+add_shortcode( 'cn_receiver_actions', 'cn_submit_shortcode' );
 
 function cn_list_items_shortcode() {
     ob_start();
@@ -1028,7 +1028,7 @@ function cn_list_items_shortcode() {
 
     return ob_get_clean();
 }
-add_shortcode( 'receiver_list', 'cn_list_items_shortcode' );
+add_shortcode( 'cn_receiver_list', 'cn_list_items_shortcode' );
 
 function register_session() {
     if (!session_id())
@@ -1309,7 +1309,7 @@ function cn_admin_content() {
 
 	 echo '<h3>Top Search Terms</h3>';
 
-	 $searchs_sql = "SELECT keywords, count(id) as count FROM wp_communityneeds_searches GROUP BY keywords ORDER BY count DESC LIMIT 20";
+	 $searchs_sql = "SELECT keywords, count(id) as count FROM ".$wpdb->prefix."communityneeds_searches GROUP BY keywords ORDER BY count DESC LIMIT 20";
 	 $searchs = $wpdb->get_results($searchs_sql);
 	 echo '<table>';
 	 foreach ($searchs as $search) {
